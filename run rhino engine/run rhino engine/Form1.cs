@@ -25,13 +25,19 @@ namespace run_rhino_engine
         {
             rhino = Context.enter();
             rhino.setOptimizationLevel(-1);
-            rhino.setLanguageVersion(Context.VERSION_ES6);
+            rhino.setLanguageVersion(Context.VERSION_ES6); //버전을 ES6으로 지정
+	    Script script;
             try
             {
                 scope = new ImporterTopLevel(rhino);
                 ScriptableObject.putProperty(scope, "ctx", this);
-                ScriptableObject.defineClass(scope, new customMethod.Api().getClass());
-                resultBox.Text = rhino.evaluateString(scope, codeBox.Text, "JavaScript", 1, null).ToString();
+                ScriptableObject.defineClass(scope, new customMethod.Api().getClass()); //Api라는 클래스 추가
+		/*컴파일
+		
+		script = rhino.compileReader(reader, "JavaScript", 1, null);
+		resultBox.Text = script.exec(rhino, scope);
+		*/
+                resultBox.Text = rhino.evaluateString(scope, codeBox.Text, "JavaScript", 1, null).ToString(); //실행
 
             }
             catch(Exception error)
@@ -54,7 +60,7 @@ namespace run_rhino_engine
                 return "Api";
             }
 
-            [JSStaticFunction]
+            [JSStaticFunction] //자바에서는, @JSStaticFunction
             public static string Test()
             {
                 return "Hello World!";
